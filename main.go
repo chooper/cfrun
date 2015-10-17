@@ -1,15 +1,14 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/cloudformation"
 	"gopkg.in/yaml.v2"
+	"io/ioutil"
 	"log"
-	"os"
 	"strconv"
 )
 
@@ -20,8 +19,6 @@ import (
 // - Variable file names
 // - --delete-before-update
 // - diffs
-
-const BUFFER_SIZE = 65536
 
 // stolen: https://github.com/bronze1man/yaml2json/blob/master/main.go
 func transformData(in interface{}) (out interface{}, err error) {
@@ -64,17 +61,10 @@ func transformData(in interface{}) (out interface{}, err error) {
 }
 
 func loadTemplate(filename string) []byte {
-	file, err := os.Open(filename)
+	file_contents, err := ioutil.ReadFile(filename)
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
-
-	file_contents := make([]byte, BUFFER_SIZE)
-	_, err = file.Read(file_contents)
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	file_contents = bytes.Trim(file_contents, "\x00")
 
 	var file_structure interface{}
 	err = yaml.Unmarshal([]byte(file_contents), &file_structure)
