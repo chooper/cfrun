@@ -2,8 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/cloudformation"
+	"github.com/chooper/cfrun/aws"
 	"github.com/chooper/cfrun/template"
 	"log"
 )
@@ -21,15 +20,10 @@ func main() {
 	cf_json := template.ConvertToJSON(template.LoadYAML(filename))
 	fmt.Printf("--- cf_json:\n%v\n\n", string(cf_json))
 
-	config := aws.NewConfig().WithRegion("us-west-2")
-	svc := cloudformation.New(config)
-	input := &cloudformation.ValidateTemplateInput{
-		TemplateBody: aws.String(string(cf_json)),
-	}
-	template, err := svc.ValidateTemplate(input)
+	aws := aws.ConnectAWS("us-west-2")
+	t, err := aws.ValidateTemplate(string(cf_json))
 	if err != nil {
 		log.Fatal(err) // print error and exit
 	}
-	log.Println(*template.Description) // output the templates description if specified.
-
+	log.Println(*t.Description) // output the templates description if specified.
 }
