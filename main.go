@@ -57,7 +57,6 @@ func transformData(in interface{}) (out interface{}, err error) {
 	default:
 		return in, nil
 	}
-	return in, nil
 }
 
 func loadTemplate(filename string) []byte {
