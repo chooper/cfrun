@@ -18,7 +18,7 @@ import (
 
 func main() {
 	filename := "advanced.yaml"
-	cf_json := template.Load(filename)
+	cf_json := template.ConvertToJSON(template.LoadYAML(filename))
 	fmt.Printf("--- cf_json:\n%v\n\n", string(cf_json))
 
 	config := aws.NewConfig().WithRegion("us-west-2")

@@ -49,7 +49,7 @@ func transformData(in interface{}) (out interface{}, err error) {
 	}
 }
 
-func Load(filename string) []byte {
+func LoadYAML(filename string) interface{} {
 	file_contents, err := ioutil.ReadFile(filename)
 	if err != nil {
 		log.Fatalf("error: %v", err)
@@ -65,8 +65,16 @@ func Load(filename string) []byte {
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
+	return file_structure
+}
 
-	cf_json, err := json.Marshal(file_structure)
+func ConvertToJSON(structure interface{}) []byte {
+	structure, err := transformData(structure)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	cf_json, err := json.Marshal(structure)
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
