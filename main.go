@@ -9,17 +9,17 @@ import (
 
 // TODO
 // - Create stack
-// - --region flag
 // - --profile flag
-// - Variable file names
 // - --delete-before-update
 // - diffs
 
 func main() {
+	// TODO(charles) accept filename as an argument
 	filename := "advanced.yaml"
 	cf_json := template.ConvertToJSON(template.LoadYAML(filename))
 	fmt.Printf("--- cf_json:\n%v\n\n", string(cf_json))
 
+	// TODO(charles) remove hardcoded region name
 	aws := stack.ConnectAWS("us-west-2")
 	s, err := aws.ValidateTemplate(string(cf_json))
 	if err != nil {
