@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/chooper/cfrun/stack"
 	"github.com/chooper/cfrun/template"
 	"log"
@@ -14,15 +13,22 @@ import (
 // - diffs
 
 func main() {
-	// TODO(charles) accept filename as an argument
+	// TODO(charles) accept these as arguments
 	filename := "advanced.yaml"
-	cf_json := template.ConvertToJSON(template.LoadYAML(filename))
-	fmt.Printf("--- cf_json:\n%v\n\n", string(cf_json))
+	s3_bucket := "cch-test"
+	s3_key := "cf.json"
+	region := "us-west-2"
 
-	// TODO(charles) remove hardcoded region name
-	aws := stack.ConnectAWS("us-west-2")
-	err := aws.ValidateTemplate(string(cf_json))
+	cf_json := template.ConvertToJSON(template.LoadYAML(filename))
+
+	aws := stack.ConnectAWS(region)
+	err := aws.ValidateTemplate(cf_json)
 	if err != nil {
-		log.Fatal(err) // print error and exit
+		log.Fatal(err)
+	}
+
+	err = aws.UploadTemplate(s3_bucket, s3_key, cf_json)
+	if err != nil {
+		log.Fatal(err)
 	}
 }
