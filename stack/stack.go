@@ -18,11 +18,11 @@ func ConnectAWS(r string) *AWSConnection {
 }
 
 func (a *AWSConnection) ValidateTemplate(i []byte) error {
+	cf := cloudformation.New(a.Config)
 	input := &cloudformation.ValidateTemplateInput{
 		TemplateBody: aws.String(string(i)),
 	}
 
-	cf := cloudformation.New(a.Config)
 	_, err := cf.ValidateTemplate(input)
 	return err
 }
@@ -35,5 +35,15 @@ func (a *AWSConnection) UploadTemplate(b string, k string, t []byte) error {
 		Body:   bytes.NewReader([]byte(t)),
 	}
 	_, err := s3_.PutObject(input)
+	return err
+}
+
+func (a *AWSConnection) CreateStack(b string, k string, s string) error {
+	cf := cloudformation.New(a.Config)
+	input := &cloudformation.CreateStackInput{
+		StackName:   aws.String(s),
+		TemplateURL: aws.String("https://s3.amazonaws.com/" + b + "/" + k),
+	}
+	_, err := cf.CreateStack(input)
 	return err
 }

@@ -5,24 +5,12 @@
     EC2Instance: 
       Type: "AWS::EC2::Instance"
       Properties: 
-        InstanceType: 
-          Ref: "InstanceType"
+        InstanceType: t2.micro
         SecurityGroups: 
           - 
             Ref: "InstanceSecurityGroup"
-        KeyName: 
-          Ref: "KeyName"
-        ImageId: 
-          Fn::FindInMap: 
-            - "AWSRegionArch2AMI"
-            - 
-              Ref: "AWS::Region"
-            - 
-              Fn::FindInMap: 
-                - "AWSInstanceType2Arch"
-                - 
-                  Ref: "InstanceType"
-                - "Arch"
+        KeyName: "chooper_2015"
+        ImageId: "ami-2853b41b"
     InstanceSecurityGroup: 
       Type: "AWS::EC2::SecurityGroup"
       Properties: 
@@ -32,5 +20,4 @@
             IpProtocol: "tcp"
             FromPort: "22"
             ToPort: "22"
-            CidrIp: 
-              Ref: "SSHLocation"
+            CidrIp: "0.0.0.0/0"
