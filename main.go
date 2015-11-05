@@ -21,9 +21,8 @@ func main() {
 
 	// TODO(charles) remove hardcoded region name
 	aws := stack.ConnectAWS("us-west-2")
-	s, err := aws.ValidateTemplate(string(cf_json))
+	err := aws.ValidateTemplate(string(cf_json))
 	if err != nil {
 		log.Fatal(err) // print error and exit
 	}
-	log.Println(*s.Description) // output the templates description if specified.
 }
