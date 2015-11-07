@@ -2,6 +2,7 @@ package stack
 
 import (
 	"bytes"
+	"errors"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/cloudformation"
 	"github.com/aws/aws-sdk-go/service/s3"
@@ -46,4 +47,20 @@ func (a *AWSConnection) CreateStack(b string, k string, s string) (*string, erro
 	}
 	output, err := cf.CreateStack(input)
 	return output.StackId, err
+}
+
+func (a *AWSConnection) GetStackStatus(sid *string) (*string, error) {
+	cf := cloudformation.New(a.Config)
+	input := &cloudformation.DescribeStacksInput{
+		StackName: aws.String(*sid),
+	}
+	output, err := cf.DescribeStacks(input)
+	if len(output.Stacks) != 1 {
+		err = errors.New("DescribeStacks output does not have exactly 1 stacks")
+	}
+	if err != nil {
+		return nil, err
+	}
+	stack := output.Stacks[0]
+	return stack.StackStatus, nil
 }

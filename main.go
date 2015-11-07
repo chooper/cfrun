@@ -4,6 +4,7 @@ import (
 	"github.com/chooper/cfrun/stack"
 	"github.com/chooper/cfrun/template"
 	"log"
+	"time"
 )
 
 // TODO
@@ -33,8 +34,21 @@ func main() {
 		log.Fatal(err)
 	}
 
-	_, err = aws.CreateStack(s3_bucket, s3_key, stack_name)
+	stack_id, err := aws.CreateStack(s3_bucket, s3_key, stack_name)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	for {
+		status, err := aws.GetStackStatus(stack_id)
+		if err != nil {
+			log.Fatal(err)
+		}
+		// TODO(charles) there are other statuses we should stop for
+		log.Printf("status: %v", *status)
+		if *status == "CREATE_COMPLETE" {
+			break
+		}
+		time.Sleep(10 * time.Second)
 	}
 }
