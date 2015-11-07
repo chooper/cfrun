@@ -33,7 +33,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = aws.CreateStack(s3_bucket, s3_key, stack_name)
+	_, err = aws.CreateStack(s3_bucket, s3_key, stack_name)
 	if err != nil {
 		log.Fatal(err)
 	}

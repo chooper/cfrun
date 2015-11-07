@@ -38,12 +38,12 @@ func (a *AWSConnection) UploadTemplate(b string, k string, t []byte) error {
 	return err
 }
 
-func (a *AWSConnection) CreateStack(b string, k string, s string) error {
+func (a *AWSConnection) CreateStack(b string, k string, s string) (*string, error) {
 	cf := cloudformation.New(a.Config)
 	input := &cloudformation.CreateStackInput{
 		StackName:   aws.String(s),
 		TemplateURL: aws.String("https://s3.amazonaws.com/" + b + "/" + k),
 	}
-	_, err := cf.CreateStack(input)
-	return err
+	output, err := cf.CreateStack(input)
+	return output.StackId, err
 }
